@@ -1,10 +1,7 @@
+open Lib;;
 exception Found of int
 
 let input_file = "./input/day_2_input.txt"
-
-let make_stream channel =
-  Stream.from
-    (fun _ -> try Some (input_line channel) with End_of_file -> None)
 
 let part_one() =
   let get_matches input =
@@ -21,14 +18,9 @@ let part_one() =
        if freq == 3 then three_match := 1;) ht;
     (!two_match, !three_match)
   in
-  let stream_fold f stream init =
-    let result = ref init in
-    Stream.iter (fun x -> result := f x !result) stream;
-    !result
-  in
-  let lines = (make_stream (open_in input_file)) in
+  let lines = Lib.make_stream input_file in
   let two_matches, three_matches =
-    stream_fold
+    Lib.stream_fold
       (fun input (a, b) ->
        let c, d = get_matches input in
        (a + c, b + d)) lines (0, 0)
@@ -36,12 +28,6 @@ let part_one() =
   Printf.printf "[1.1] = %d\n" (two_matches * three_matches)
 
 let part_two() =
-  let list_of_stream stream =
-    let result = ref [] in
-    Stream.iter
-      (fun value -> result := value :: !result) stream;
-    List.rev !result
-  in
   let levenshtein s t =
     let m = String.length s in
     let n = String.length t in
@@ -72,7 +58,7 @@ let part_two() =
       find_similar_ids lines next_index
     with Found i -> (Array.get lines current_index, Array.get lines i)
   in
-  let lines  = Array.of_list(list_of_stream(make_stream(open_in input_file))) in
+  let lines  = Array.of_list(Lib.list_of_stream(Lib.make_stream input_file)) in
   let a, b = find_similar_ids lines 0 in
   let find_common_chars a b =
     let common = ref [] in
