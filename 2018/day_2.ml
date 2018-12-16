@@ -3,27 +3,38 @@ exception Found of int
 
 let input_file = "./input/day_2_input.txt"
 
+type id_matches = {
+  mutable two   : int;
+  mutable three : int;
+}
+
+(* @todo: add problem description *)
 let part_one() =
+
   let get_matches input =
-    let two_match = ref 0 in
-    let three_match = ref 0 in
     let ht = Hashtbl.create 26 in
     String.iter
       (fun char ->
        let value = try Hashtbl.find ht char with Not_found -> 0 in
        Hashtbl.replace ht char (value + 1)) input;
-    Hashtbl.iter
-      (fun char freq ->
-       if freq == 2 then two_match   := 1;
-       if freq == 3 then three_match := 1;) ht;
-    (!two_match, !three_match)
+
+    let matches = {two = 0; three = 0} in
+    let update_matches char freq =
+      match freq with
+      | 2 -> matches.two <- 1;
+      | 3 -> matches.three <-1;
+      | _ -> () in
+    Hashtbl.iter update_matches ht;
+    matches
   in
-  let lines = Lib.make_stream input_file in
+
+  let lines = make_stream input_line input_file in
   let two_matches, three_matches =
     Lib.stream_fold
-      (fun input (a, b) ->
-       let c, d = get_matches input in
-       (a + c, b + d)) lines (0, 0)
+      (fun input (twos, threes) ->
+       let matches = get_matches input in
+       (twos + matches.two, threes + matches.three))
+      lines (0, 0)
   in
   Printf.printf "[1.1] = %d\n" (two_matches * three_matches)
 
@@ -58,7 +69,7 @@ let part_two() =
       find_similar_ids lines next_index
     with Found i -> (Array.get lines current_index, Array.get lines i)
   in
-  let lines  = Array.of_list(Lib.list_of_stream(Lib.make_stream input_file)) in
+  let lines  = Array.of_list(Lib.list_of_stream(make_stream input_line input_file)) in
   let a, b = find_similar_ids lines 0 in
   let find_common_chars a b =
     let common = ref [] in

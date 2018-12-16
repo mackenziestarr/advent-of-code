@@ -10,7 +10,7 @@ let parse regex input matches =
   List.rev !list
 
 let part_one() =
-  let stream = make_stream input_file in
+  let stream = make_stream input_line input_file in
   let regex  =
     "#\\([0-9]+\\) @ \\([0-9]+\\),\\([0-9]+\\): \\([0-9]+\\)x\\([0-9]+\\)"
   in
