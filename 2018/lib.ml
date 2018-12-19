@@ -5,6 +5,15 @@ let stream_fold f stream init =
       stream;
     !result
 
+(* returns first element that matches predicate else raises Not_found *)
+let rec stream_find fn stream =
+  try
+    let value = Stream.next stream in
+    match fn value with
+    | true  -> value
+    | false -> stream_find fn stream
+  with Stream.Failure -> raise Not_found
+
 let make_stream fn input_file =
   let file = (open_in input_file) in
   (Stream.from
