@@ -34,3 +34,15 @@ let array_of_stream stream =
   let result = ref [||] in
   Stream.iter (fun value -> result := Array.append !result [|value|]) stream;
   !result
+
+let regex_matches_to_list regex input =
+  let _ = Str.search_forward (Str.regexp regex) input 0 in
+  let list  = ref [] in
+  let index = ref 0 in
+  try
+    while true do
+      (incr index);
+      list := (Str.matched_group !index input) :: !list;
+    done;
+    List.rev !list
+  with Not_found | Invalid_argument _ -> List.rev !list

@@ -1,21 +1,12 @@
 open Lib;;
 let input_file = "./input/day_3_input.txt"
-
-let parse_claim input =
-  let regex =
-    "#\\([0-9]+\\) @ \\([0-9]+\\),\\([0-9]+\\): \\([0-9]+\\)x\\([0-9]+\\)"
-  in
-  let _ = Str.search_forward (Str.regexp regex) input 0 in
-  let list = ref [] in
-  for index = 1 to 5 do
-    list := Str.matched_group index input :: !list
-  done;
-  List.map int_of_string (List.rev !list)
+let matcher = Lib.regex_matches_to_list
+                "#\\([0-9]+\\) @ \\([0-9]+\\),\\([0-9]+\\): \\([0-9]+\\)x\\([0-9]+\\)"
 
 let fabric =
   Lib.stream_fold
     (fun line matrix ->
-     let [id; x; y; width; height] = parse_claim line in
+     let [id; x; y; width; height] = List.map int_of_string (matcher line) in
      for i = x to (x + width) - 1 do
        for j = y to (y + height) - 1 do
          matrix.(i).(j) <- matrix.(i).(j) + 1;
@@ -47,7 +38,7 @@ let part_two () =
   let stream = make_stream input_line input_file in
   let claim = Lib.stream_find
                 (fun line ->
-                 let [id; x; y; width; height] = parse_claim line in
+                 let [id; x; y; width; height] = List.map int_of_string (matcher line) in
                  let count = ref 0 in
                  for i=x to x + width do
                    for j=y to y + height do
@@ -57,7 +48,7 @@ let part_two () =
                  !count == width * height
                 ) stream
   in
-  let [id; x; y; width; height] = parse_claim claim in
+  let [id; x; y; width; height] = List.map int_of_string (matcher claim) in
   Printf.printf "[3.1] = %d\n" id
 
 let () =
