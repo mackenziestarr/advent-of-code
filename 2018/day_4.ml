@@ -7,6 +7,10 @@ let timestamp_regex =
 let action_regex =
   "\\([0-9]+\\)\\] \\(Guard #\\([0-9]+\\)\\|\\(falls asleep\\)\\|\\(wakes up\\)\\)"
 
+type guard_action =
+  | Begin of int * int
+  | Sleep of int
+  | Wake of int
 
 let parse_and_sort input_file =
   let parse_time input =
@@ -38,28 +42,43 @@ let parse_and_sort input_file =
      compare t1 t2)
     unsorted_list
 
-let rec make_sleep_map list ht matcher guard_id sleep_min =
+let guard_action_from_line matcher line =
+  match matcher line with
+  | [minute; _; id] -> Begin((int_of_string minute), (int_of_string id))
+  | [minute; "falls asleep"] -> Sleep (int_of_string minute)
+  | [minute; "wakes up"] -> Wake (int_of_string minute)
+  | _ -> assert false
+
+let rec make_sleep_map list ht parse_fn guard_id sleep_min =
   match list with
   | [] -> ht
   | hd :: tl ->
-     match matcher hd with
-     | [minute; _; id] ->
+     let action = parse_fn hd in
+     let fn = make_sleep_map tl ht parse_fn in
+     match action with
+     | Begin (minute, id) ->
         if not (Hashtbl.mem ht id) then
           Hashtbl.add ht id (Hashtbl.create 60);
-        make_sleep_map tl ht matcher id (-1)
-     | [minute; "falls asleep"] ->
-        make_sleep_map tl ht matcher guard_id (int_of_string minute)
-     | [minute; "wakes up"] ->
-        let sleep_ht = Hashtbl.find ht guard_id in
-        for i = sleep_min to ((int_of_string minute) - 1) do
-          let value = match (Hashtbl.find_opt sleep_ht i) with
-          | Some(x) -> x
-          | None -> 0
-          in
-          Hashtbl.replace sleep_ht i (value + 1);
-        done;
-        make_sleep_map tl ht matcher guard_id (-1)
-     | _ -> assert false
+        fn (Some id) (Some minute)
+     | Sleep minute ->
+        (match guard_id with
+         | Some id -> fn (Some id) (Some minute)
+         | None -> assert false)
+     | Wake minute ->
+        (match guard_id with
+         | Some id ->
+            (let sleep_ht = Hashtbl.find ht id in
+             match sleep_min with
+             | Some min ->
+                for i = min to (minute - 1) do
+                  let value = match (Hashtbl.find_opt sleep_ht i) with
+                    | Some(x) -> x | None -> 0
+                  in
+                  Hashtbl.replace sleep_ht i (value + 1);
+                done;
+                fn (Some id) (Some min)
+             | None -> assert false)
+         | None -> assert false)
 
 let guard_sleep_duration ht =
   Hashtbl.fold
@@ -78,18 +97,19 @@ let find_sleepiest_minute_for_guard id ht =
 let part_one() =
   let sorted_list = parse_and_sort input_file in
   let matcher = Lib.regex_matches_to_list action_regex in
-  let ht = make_sleep_map sorted_list (Hashtbl.create 60) matcher "" (-1) in
+  let parse_fn = guard_action_from_line matcher in
+  let ht = make_sleep_map sorted_list (Hashtbl.create 60) parse_fn None None in
   let sleepiest_guard_id, total_minutes
     = List.fold_left
         (fun curr max ->
          let _, x = curr in
          let _, y = max in
          if x > y then curr else max)
-        ("-1", (-1))
+        ((-1), (-1))
         (guard_sleep_duration ht)
   in
   let minute, sum = find_sleepiest_minute_for_guard sleepiest_guard_id ht in
-  Printf.printf "[4.1] = (%s * %d = %d)]\n" sleepiest_guard_id minute ((int_of_string sleepiest_guard_id) * minute)
+  Printf.printf "[4.1] = (%d * %d = %d)]\n" sleepiest_guard_id minute (sleepiest_guard_id * minute)
 
 let () =
   print_endline "* Day 4 *";
