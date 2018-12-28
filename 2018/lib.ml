@@ -46,3 +46,10 @@ let regex_matches_to_list regex input =
     done;
     List.rev !list
   with Not_found | Invalid_argument _ -> List.rev !list
+
+let to_char_list string =
+  let list = ref [] in
+  String.iter
+    (fun char -> list := char :: !list)
+    string;
+  List.rev !list

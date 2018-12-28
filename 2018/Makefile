@@ -5,7 +5,7 @@ PROGS = $(patsubst %.ml,%.native,$(SRCS))
 all: $(PROGS)
 
 %.native: %.ml
-	$(CC) -o $@ str.cmxa lib.ml $<
+	$(CC) -o $@ unix.cmxa str.cmxa lib.ml $<
 	./$@
 
 clean:

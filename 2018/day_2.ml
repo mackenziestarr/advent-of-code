@@ -36,7 +36,7 @@ let part_one() =
        (twos + matches.two, threes + matches.three))
       lines (0, 0)
   in
-  Printf.printf "[1.1] = %d\n" (two_matches * three_matches)
+  Printf.printf "[2.1] = %d\n" (two_matches * three_matches)
 
 let part_two() =
   let levenshtein s t =
@@ -80,7 +80,7 @@ let part_two() =
       ) a;
     String.concat "" (List.map (String.make 1) (List.rev !common))
   in
-  Printf.printf "[1.2] = %s\n" (find_common_chars a b)
+  Printf.printf "[2.2] = %s\n" (find_common_chars a b)
 
 let () =
   print_endline "* Day 2 *";
