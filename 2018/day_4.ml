@@ -92,13 +92,14 @@ let find_sleepiest_minute_for_guard id ht =
     (fun minute freq max ->
      let _, max_freq = max in
      if freq > max_freq then (minute, freq) else max)
-     ht ((-1), (-1))
+    ht ((-1), (-1))
+
+let sorted_list = parse_and_sort input_file
+let matcher = Lib.regex_matches_to_list action_regex
+let parse_fn = guard_action_from_line matcher
+let ht = make_sleep_map sorted_list (Hashtbl.create 60) parse_fn None None
 
 let part_one() =
-  let sorted_list = parse_and_sort input_file in
-  let matcher = Lib.regex_matches_to_list action_regex in
-  let parse_fn = guard_action_from_line matcher in
-  let ht = make_sleep_map sorted_list (Hashtbl.create 60) parse_fn None None in
   let sleepiest_guard_id, total_minutes
     = List.fold_left
         (fun curr max ->
@@ -111,6 +112,30 @@ let part_one() =
   let minute, sum = find_sleepiest_minute_for_guard sleepiest_guard_id ht in
   Printf.printf "[4.1] = (%d * %d = %d)]\n" sleepiest_guard_id minute (sleepiest_guard_id * minute)
 
+let part_two () =
+  let max_minutes = Hashtbl.create 60 in
+  Hashtbl.iter
+    (fun key ht ->
+     Hashtbl.iter
+       (fun minute freq ->
+        let (key', freq') = match Hashtbl.find_opt max_minutes minute with
+          | Some (x, y) -> (x, y);
+          | None -> ((-1), (-1));
+        in
+        if freq' > freq then Hashtbl.replace max_minutes minute (key', freq')
+        else Hashtbl.replace max_minutes minute (key, freq);
+       ) ht
+    ) ht;
+  let id, freq, minute =
+    Hashtbl.fold
+      (fun minute (id, freq) (id', freq', minute') ->
+       if freq > freq' then (id, freq, minute) else (id', freq', minute'))
+      max_minutes (-1, -1, -1)
+  in
+  Printf.printf "[4.2] = (%d * %d = %d)]\n" id minute (id * minute)
+
+
 let () =
   print_endline "* Day 4 *";
-  part_one()
+  part_one();
+  part_two();
