@@ -11,10 +11,34 @@ let reduce_polymer polymer x =
   | y :: ys when reacts x y -> ys
   | ys -> x :: ys
 
+let reduced_polymer = List.fold_left reduce_polymer [] input
+
 let part_one() =
-  let reduced_polymer = List.fold_left reduce_polymer [] input in
-  Printf.printf "[5.1] = %d\n" (String.length (String.concat "" reduced_polymer))
+  Printf.printf "[5.1] = %d\n" (List.length reduced_polymer)
+
+let part_two() =
+  let edited_polymers =
+    List.map
+      (fun offset ->
+       let x = offset + 65 in
+       let y = x + 32 in
+       (List.filter
+          (fun s ->
+           let ch : int = Char.code((s.[0])) in
+           (ch != x && ch != y)
+          )
+          input))
+      (Lib.range 0 25)
+  in
+  let reduced_polymers =
+    List.map
+      (fun x -> List.length(List.fold_left reduce_polymer [] x))
+      edited_polymers
+  in
+  Printf.printf "[5.2] = %d\n" (List.fold_left min max_int reduced_polymers)
+
 
 let () =
   print_endline "* Day 5 *";
-  part_one()
+  part_one();
+  part_two()

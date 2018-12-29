@@ -53,3 +53,7 @@ let to_char_list string =
     (fun char -> list := char :: !list)
     string;
   List.rev !list
+
+let rec range x y =
+  if x > y then []
+  else x :: range (x + 1) y
