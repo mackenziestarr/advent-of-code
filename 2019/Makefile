@@ -1,5 +1,5 @@
 CC:=clang++
-CPPFLAGS:=-Wall -g
+CPPFLAGS:=-Wall -g -std=c++17
 OUTDIR:=target
 
 %: src/%.cpp
@@ -7,14 +7,14 @@ OUTDIR:=target
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $< -o ${OUTDIR}/$@
 	@./${OUTDIR}/$@
 
-%_test : test/%.cpp
+%_test : src/%.cpp
 	@mkdir -p target
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $< -o ${OUTDIR}/$@
+	@$(CC) $(CFLAGS) -D RUN_TESTS $(CPPFLAGS) $< -o ${OUTDIR}/$@
 	@./${OUTDIR}/$@
 
 .PHONY: clean all
 
-all: $(patsubst %.cpp, %.o, $(wildcard *.cpp))
+all: $(patsubst src/%.cpp, %, $(wildcard src/*.cpp))
 
 clean:
 	rm -rf *.out*
