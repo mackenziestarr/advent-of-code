@@ -4,6 +4,12 @@
 
 ### language: C++
 
+```shell session
+cd 2019
+make day_<day_num>
+make day_<day_num>_test
+```
+
 ## 2018
 
 ### language: OCaml
