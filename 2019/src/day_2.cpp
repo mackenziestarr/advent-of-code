@@ -24,7 +24,7 @@ std::vector<int> execute(std::vector<int>& tokens) {
     int right	= tokens[i+2];
     int result	= tokens[i+3];
     if (opcode == OpCodeAdd) {
-      tokens[result] = tokens[left] + tokens[right];      
+      tokens[result] = tokens[left] + tokens[right];
     }
     else if (opcode == OpCodeMultiply) {
       tokens[result] = tokens[left] * tokens[right];
@@ -39,7 +39,7 @@ std::vector<int> execute(std::vector<int>& tokens) {
 #ifdef RUN_TESTS
 #define CATCH_CONFIG_MAIN
 #include "../third_party/catch.hpp"
-TEST_CASE("correctly executees Intcode programs", "[execute]") {
+TEST_CASE("correctly executes Intcode programs", "[execute]") {
   {
     std::vector<int> input {1, 0, 0, 0, 99};
     std::vector<int> expected {2, 0, 0, 0, 99};
@@ -57,7 +57,7 @@ TEST_CASE("correctly executees Intcode programs", "[execute]") {
   }
   {
     std::vector<int> input {1, 1, 1, 4, 99, 5, 6, 0, 99};
-    std::vector<int> expected {30, 1, 1, 4, 2, 5, 6, 0, 99};  
+    std::vector<int> expected {30, 1, 1, 4, 2, 5, 6, 0, 99};
     REQUIRE(execute(input) == expected);
   }
 }
@@ -94,7 +94,7 @@ int main() {
   std::vector<int> tokens = split(input, ',');
   std::cout << "advent of code 2019: day 2" << std::endl;
   std::cout << "part one:\t" << part_one(tokens) << std::endl;
-  std::cout << "part two:\t" << part_two(tokens) << std::endl;    
+  std::cout << "part two:\t" << part_two(tokens) << std::endl;
   return 0;
 }
 #endif

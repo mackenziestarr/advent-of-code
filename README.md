@@ -6,6 +6,7 @@
 
 ```shell session
 cd 2019
+wget -O third_party/catch.hpp https://github.com/catchorg/Catch2/releases/download/v2.11.0/catch.hpp
 make day_<day_num>
 make day_<day_num>_test
 ```
