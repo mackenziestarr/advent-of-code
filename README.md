@@ -1,5 +1,14 @@
 # Advent of Code
 
+## 2020
+
+### language: C++
+
+```shell session
+cd 2020
+bazelisk run //src:day-01
+```
+
 ## 2019
 
 ### language: C++
