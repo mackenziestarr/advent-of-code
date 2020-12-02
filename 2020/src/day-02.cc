@@ -7,8 +7,8 @@
 #include <algorithm>
 
 struct Policy {
-  int lower_bound;
-  int upper_bound;
+  int lower;
+  int upper;
   char letter;
 };
 
@@ -28,9 +28,9 @@ std::vector<Password> parse(const std::string& input_file) {
     std::istringstream ss(line);
     Password p;
     // example line from file "6-8 s: svsssszslpsp"
-    ss >> p.policy.lower_bound;
+    ss >> p.policy.lower;
     ss.ignore(std::numeric_limits<std::streamsize>::max(), '-');
-    ss >> p.policy.upper_bound >> p.policy.letter;
+    ss >> p.policy.upper >> p.policy.letter;
     ss.ignore(std::numeric_limits<std::streamsize>::max(), ':');
     ss >> p.text;
     out.emplace_back(p);
@@ -38,18 +38,33 @@ std::vector<Password> parse(const std::string& input_file) {
   return out;
 }
 
-bool is_valid(const Password& p) {
-  int count = std::count_if(
-    p.text.cbegin(),
-    p.text.cend(),
-    [&p](char c) { return c == p.policy.letter; }
-  );
-  return p.policy.lower_bound <= count &&
-         p.policy.upper_bound >= count;
+namespace part_one {
+  bool is_valid(const Password& p) {
+    int count = std::count_if(
+      p.text.cbegin(),
+      p.text.cend(),
+      [&p](char c) { return c == p.policy.letter; }
+    );
+    return p.policy.lower <= count &&
+           p.policy.upper >= count;
+  }
+}
+
+namespace part_two {
+  bool is_valid(const Password& p) {
+    return (p.text[p.policy.lower - 1] == p.policy.letter) !=
+           (p.text[p.policy.upper - 1] == p.policy.letter);
+  }
 }
 
 TEST_CASE("part one") {
-  std::vector<Password> passwords = parse("src/day-02.input");
-  int answer = std::count_if(passwords.cbegin(), passwords.cend(), is_valid);
+  std::vector<Password> passwords = parse("src/day-02.input");  
+  int answer = std::count_if(passwords.cbegin(), passwords.cend(), part_one::is_valid);
   REQUIRE(answer == 515);
+}
+
+TEST_CASE("part two") {
+  std::vector<Password> passwords = parse("src/day-02.input");    
+  int answer = std::count_if(passwords.cbegin(), passwords.cend(), part_two::is_valid);
+  REQUIRE(answer == 711);
 }
