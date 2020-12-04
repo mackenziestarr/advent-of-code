@@ -6,7 +6,6 @@ filegroup(
         "day-01.input",
         "day-02.input",
         "day-03.input",
-        "tmp.txt",
     ],
 )
 
