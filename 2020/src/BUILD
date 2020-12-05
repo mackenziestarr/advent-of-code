@@ -6,6 +6,7 @@ filegroup(
         "day-01.input",
         "day-02.input",
         "day-03.input",
+        "day-04.input",
     ],
 )
 
@@ -38,5 +39,18 @@ cc_test(
         "@catch2//:catch2_main"
     ]
 )
+
+cc_test(
+    name = "day-04",
+    srcs = ["day-04.cc"],
+    data = [":input_data"],
+    copts = ["-std=c++2a"],
+    deps = [
+        "@catch2//:catch2_main"
+    ]
+)
+
+
+
 
 
