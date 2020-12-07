@@ -46,14 +46,14 @@ std::vector<int> combination_summing_to_n(std::vector<int>& input, const int k, 
 }
 
 TEST_CASE("part one") {
-  std::vector<int> input = parse("src/day-01.input");
+  std::vector<int> input = parse("input/day-01.input");
   std::vector<int> numbers = combination_summing_to_n(input, 2, 2020);
   int answer = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
   REQUIRE(answer == 787776);
 }
 
 TEST_CASE("part two") {
-  std::vector<int> input = parse("src/day-01.input");
+  std::vector<int> input = parse("input/day-01.input");
   std::vector<int> numbers = combination_summing_to_n(input, 3, 2020);
   int answer = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
   REQUIRE(answer == 262738554);

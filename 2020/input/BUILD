@@ -1,0 +1,11 @@
+filegroup(
+    name = "data",
+    visibility = ["//visibility:public"],
+    srcs = [
+        "day-01.input",
+        "day-02.input",
+        "day-03.input",
+        "day-04.input",
+        "day-05.input",
+    ],
+)

@@ -58,13 +58,13 @@ namespace part_two {
 }
 
 TEST_CASE("part one") {
-  std::vector<Password> passwords = parse("src/day-02.input");  
+  std::vector<Password> passwords = parse("input/day-02.input");  
   int answer = std::count_if(passwords.cbegin(), passwords.cend(), part_one::is_valid);
   REQUIRE(answer == 515);
 }
 
 TEST_CASE("part two") {
-  std::vector<Password> passwords = parse("src/day-02.input");    
+  std::vector<Password> passwords = parse("input/day-02.input");    
   int answer = std::count_if(passwords.cbegin(), passwords.cend(), part_two::is_valid);
   REQUIRE(answer == 711);
 }

@@ -97,7 +97,7 @@ bool is_valid(std::map<std::string, std::string> input) {
 }
 
 TEST_CASE("day four") {
-  const auto batches = parse("src/day-04.input");
+  const auto batches = parse("input/day-04.input");
   std::vector<std::map<std::string, std::string>> records;
   std::transform(batches.cbegin(), batches.cend(), std::back_inserter(records),
                  parse_fields);

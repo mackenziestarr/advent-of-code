@@ -51,13 +51,13 @@ std::size_t count_trees_for_slope(
 }
 
 TEST_CASE("part one") {
-  std::vector<std::vector<Square>> input = parse("src/day-03.input");
+  std::vector<std::vector<Square>> input = parse("input/day-03.input");
   std::size_t answer = count_trees_for_slope(input, 3, 1);
   REQUIRE(answer == 286);
 }
 
 TEST_CASE("part two") {
-  std::vector<std::vector<Square>> input = parse("src/day-03.input");
+  std::vector<std::vector<Square>> input = parse("input/day-03.input");
   std::vector<std::pair<std::size_t, std::size_t>> slopes = {
     {1,1},{3,1},{5,1},{7,1},{1,2}
   };

@@ -28,7 +28,7 @@ int decode(const std::string_view& input) {
 }
 
 TEST_CASE("part one") {
-  std::ifstream in("src/day-05.input");
+  std::ifstream in("input/day-05.input");
   if (!in) throw std::runtime_error("couldn't open file");
 
   int answer =
