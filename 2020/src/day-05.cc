@@ -41,3 +41,26 @@ TEST_CASE("part one") {
   
   REQUIRE(answer == 998);
 }
+
+TEST_CASE("part two") {
+  std::ifstream in("input/day-05.input");
+  if (!in) throw std::runtime_error("couldn't open file");
+
+  std::vector<int> input;
+  std::transform(
+    (std::istream_iterator<std::string>(in)),
+    std::istream_iterator<std::string>(),
+    std::back_inserter(input),
+    [](const std::string_view& s) { return decode(s); });
+
+  int answer = -1;
+  std::sort(input.begin(), input.end());
+  for (int i = 1; i < input.size(); i++) {
+    if (input[i] - input[i-1] == 2) {
+      answer = input[i] - 1;
+    }
+  }
+  
+  REQUIRE(answer == 676);
+}
+
