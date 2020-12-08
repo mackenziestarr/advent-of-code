@@ -50,6 +50,18 @@ cc_test(
     ]
 )
 
+cc_test(
+    name = "day-06",
+    srcs = ["day-06.cc"],
+    data = ["//input:data"],    
+    copts = ["-std=c++2a"],
+    deps = [
+        "@catch2//:catch2_main"
+    ]
+)
+
+
+
 
 
 
