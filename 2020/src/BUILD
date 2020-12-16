@@ -70,3 +70,14 @@ cc_test(
         "@catch2//:catch2_main"
     ]
 )
+
+cc_test(
+    name = "day-08",
+    srcs = ["day-08.cc"],
+    data = ["//input:data"],
+    copts = ["-std=c++2a"],
+    deps = [
+        "@catch2//:catch2_main"
+    ]
+)
+
