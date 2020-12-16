@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 using EdgeType  = std::pair<std::size_t, std::string>;
 using EdgesType = std::vector<EdgeType>;
@@ -58,6 +59,16 @@ auto has_path(const std::unordered_map<NodeType::first_type, NodeType::second_ty
   return false;
 }
 
+int count_bags(const std::unordered_map<NodeType::first_type, NodeType::second_type>& graph,
+	       const std::string &start_node)
+{
+  int sum = 1;
+  for (const auto& [num, edge] : graph.find(start_node)->second) {
+    sum += num * count_bags(graph, edge);
+  }
+  return sum;
+}
+
 TEST_CASE("part one") {
   auto input = parse("input/day-07.input");
   std::string target_bag = "shiny gold";
@@ -71,4 +82,9 @@ TEST_CASE("part one") {
     }
   );
   REQUIRE(count == 226);
+}
+
+TEST_CASE("part two") {
+  auto input = parse("input/day-07.input");  
+  REQUIRE(count_bags(input, "shiny gold") - 1 == 9569);
 }
