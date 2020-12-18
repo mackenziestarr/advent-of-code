@@ -6,6 +6,9 @@
 
 ```shell session
 cd 2020
+# run all tests
+bazelisk test //...
+# run a single day
 bazelisk run //src:day-01
 ```
 

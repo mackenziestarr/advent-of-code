@@ -1,83 +1,13 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
+load("cc_tests.bzl", "gen_cc_tests")
 
-
-cc_test(
-    name = "day-01",
-    srcs = ["day-01.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a -g"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-02",
-    srcs = ["day-02.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-03",
-    srcs = ["day-03.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-04",
-    srcs = ["day-04.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-05",
-    srcs = ["day-05.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-06",
-    srcs = ["day-06.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-07",
-    srcs = ["day-07.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
-cc_test(
-    name = "day-08",
-    srcs = ["day-08.cc"],
-    data = ["//input:data"],
-    copts = ["-std=c++2a"],
-    deps = [
-        "@catch2//:catch2_main"
-    ]
-)
-
+gen_cc_tests([
+    "day-01",
+    "day-02",
+    "day-03",
+    "day-04",
+    "day-05",
+    "day-06",
+    "day-07",
+    "day-08",
+])

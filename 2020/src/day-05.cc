@@ -3,6 +3,7 @@
 #include <fstream>
 #include <numeric>
 #include <iostream>
+#include <iterator>
 
 int decode(const std::string_view& input) {
   std::string_view row_tokens = input.substr(0, 7);

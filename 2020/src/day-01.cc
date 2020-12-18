@@ -6,6 +6,7 @@
 #include <iostream>
 #include <set>
 #include <numeric>
+#include <iterator>
 
 std::vector<int> parse(const std::string& input_file) {
   std::ifstream in(input_file);
