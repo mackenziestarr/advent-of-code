@@ -18,9 +18,14 @@ enum class OpCode {
   Jmp
 };
 
-enum class ProgramStatus {
-  Terminated,
+enum class Status {
+  Error,
   Success
+};
+
+struct Result {
+  Status status;
+  int accumulator = 0;
 };
 
 OpCode to_opcode(const std::string& op) {
@@ -30,41 +35,50 @@ OpCode to_opcode(const std::string& op) {
   throw std::runtime_error("unsupported opcode: " + op);
 }
 
-class VirtualMachine {
+Result run(std::vector<Instruction> instructions) {
+  std::size_t pc = 0;
   int accumulator = 0;
-  std::vector<Instruction>& instructions;
-public:
-  VirtualMachine(std::vector<Instruction>& instructions)
-    : instructions{instructions} {}
-  int getAccumulator() const {
-    return accumulator;
-  }
-  ProgramStatus run() {
-    std::size_t pc = 0;
-    while (pc < instructions.size()) {
-      Instruction& i = instructions[pc];
+  while (pc < instructions.size()) {
+    Instruction& i = instructions[pc];
 
-      if (i.executed) {
-	return ProgramStatus::Terminated;
-      }
-      
-      switch (to_opcode(i.opcode)) {
-        case OpCode::Jmp : {
-	  pc += i.argument;
-  	  break;
-        }
-        case OpCode::Acc : {
-  	  accumulator += i.argument;
-        }
-        case OpCode::Nop : {}
-        default: pc++;
-      }
-      
-      i.executed = true;
+    if (i.executed) {
+      return {Status::Error, accumulator};
     }
-    return ProgramStatus::Success;
+      
+    switch (to_opcode(i.opcode)) {
+      case OpCode::Jmp : {
+        pc += i.argument;
+        break;
+      }
+      case OpCode::Acc : {
+        accumulator += i.argument;
+        pc++;
+        break;
+      }
+      case OpCode::Nop : {
+        pc++;
+        break;
+      }
+    }
+      
+    i.executed = true;
   }
-};
+
+  return {Status::Success, accumulator};
+}
+
+Result repair(std::vector<Instruction>& instructions) {
+  for (auto& [opcode, _arg, _ex] : instructions) {
+    if (opcode == "jmp") opcode = "nop";
+    else if (opcode == "nop") opcode = "jmp";
+    else continue;
+
+    const auto& res = run(instructions);
+    if (res.status == Status::Success) return res;
+    else opcode = opcode == "jmp" ? "nop" : "jmp";
+  }
+  return {Status::Error, 0};
+}
 
 std::vector<Instruction> parse(const std::string& input) {
   std::ifstream in {input};
@@ -82,9 +96,15 @@ std::vector<Instruction> parse(const std::string& input) {
 }
 
 TEST_CASE("part one") {
-  auto input = parse("input/day-08.input");
-  VirtualMachine vm { input };
-  ProgramStatus status = vm.run();
-  REQUIRE(status == ProgramStatus::Terminated);
-  REQUIRE(vm.getAccumulator() == 1782);
+  auto instructions = parse("input/day-08.input");
+  const auto& [status, acc] = run(instructions);
+  REQUIRE(status == Status::Error);
+  REQUIRE(acc == 1782);
+}
+
+TEST_CASE("part two") {
+  auto instructions = parse("input/day-08.input");
+  const auto& [status, acc] = repair(instructions);
+  REQUIRE(status == Status::Success);
+  REQUIRE(acc == 797);
 }
