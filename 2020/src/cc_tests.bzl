@@ -6,6 +6,7 @@ def gen_cc_tests(names, visibility=None):
             data = ["//input:data"],
             copts = ["-std=c++2a"],
             deps = [
-                "@catch2//:catch2_main"
+                "@catch2//:catch2_main",
+                ":lib"
             ]
         )

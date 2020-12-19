@@ -7,17 +7,7 @@
 #include <set>
 #include <numeric>
 #include <iterator>
-
-std::vector<int> parse(const std::string& input_file) {
-  std::ifstream in(input_file);
-  if (!in.good()) {
-    throw std::runtime_error("couldn't open input file");
-  }
-  return std::vector<int> {
-    std::istream_iterator<int>(in),
-    std::istream_iterator<int>()
-  };
-}
+#include "lib.h"
 
 void combine(std::vector<int>& input, int offset, int k, std::vector<int>& combo, std::vector<std::vector<int>>& out) {
   if (k == 0) {
@@ -46,17 +36,23 @@ std::vector<int> combination_summing_to_n(std::vector<int>& input, const int k, 
   return {};
 }
 
-TEST_CASE("part one") {
-  std::vector<int> input = parse("input/day-01.input");
-  std::vector<int> numbers = combination_summing_to_n(input, 2, 2020);
-  int answer = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
-  REQUIRE(answer == 787776);
-}
+TEST_CASE("day one") {
+  std::vector<int> input = parse(
+    std::ifstream{"input/day-01.input"},
+    [](const std::string& line) -> int {
+      return std::atoi(line.c_str());
+    }
+  );
+  SECTION("part one") {
+    std::vector<int> numbers = combination_summing_to_n(input, 2, 2020);
+    int answer = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
+    REQUIRE(answer == 787776);
+  }
 
-TEST_CASE("part two") {
-  std::vector<int> input = parse("input/day-01.input");
-  std::vector<int> numbers = combination_summing_to_n(input, 3, 2020);
-  int answer = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
-  REQUIRE(answer == 262738554);
+  SECTION("part two") {
+    std::vector<int> numbers = combination_summing_to_n(input, 3, 2020);
+    int answer = std::accumulate(numbers.begin(), numbers.end(), 1, std::multiplies<int>());
+    REQUIRE(answer == 262738554);
+  }
 }
 

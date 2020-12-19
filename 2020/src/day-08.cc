@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include "lib.h"
 
 struct Instruction {
   std::string opcode;
@@ -80,31 +81,21 @@ Result repair(std::vector<Instruction>& instructions) {
   return {Status::Error, 0};
 }
 
-std::vector<Instruction> parse(const std::string& input) {
-  std::ifstream in {input};
-  if (!in.good()) throw std::runtime_error("couldn't open file");
-
-  std::vector<Instruction> out;
-  std::string line;
-  while (std::getline(in, line)) {
-    std::istringstream lstream {line};
-    Instruction i;
-    lstream >> i.opcode >> i.argument;
-    out.push_back(i);
+TEST_CASE("day 8") {
+  auto instructions = parse(
+    std::ifstream{"input/day-08.input"},
+    [](const std::string& line) -> Instruction {
+      return {line.substr(0, 3), std::atoi(line.c_str() + 3)};
+    }
+  );
+  SECTION("part one") {
+    const auto& [status, acc] = run(instructions);
+    REQUIRE(status == Status::Error);
+    REQUIRE(acc == 1782);
   }
-  return out;
-}
-
-TEST_CASE("part one") {
-  auto instructions = parse("input/day-08.input");
-  const auto& [status, acc] = run(instructions);
-  REQUIRE(status == Status::Error);
-  REQUIRE(acc == 1782);
-}
-
-TEST_CASE("part two") {
-  auto instructions = parse("input/day-08.input");
-  const auto& [status, acc] = repair(instructions);
-  REQUIRE(status == Status::Success);
-  REQUIRE(acc == 797);
+  SECTION("part two") {
+    const auto& [status, acc] = repair(instructions);
+    REQUIRE(status == Status::Success);
+    REQUIRE(acc == 797);
+  }
 }
