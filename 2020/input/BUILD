@@ -10,5 +10,6 @@ filegroup(
         "day-06.input",
         "day-07.input",
         "day-08.input",
+        "day-09.input",
     ],
 )

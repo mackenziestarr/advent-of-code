@@ -81,8 +81,8 @@ Result repair(std::vector<Instruction>& instructions) {
   return {Status::Error, 0};
 }
 
-TEST_CASE("day 8") {
-  auto instructions = parse(
+TEST_CASE("day eight") {
+  auto instructions = aoc::parse(
     std::ifstream{"input/day-08.input"},
     [](const std::string& line) -> Instruction {
       return {line.substr(0, 3), std::atoi(line.c_str() + 3)};

@@ -34,7 +34,7 @@ std::size_t count_trees_for_slope(
 }
 
 TEST_CASE("day three") {
-  std::vector<std::vector<Square>> input = parse(
+  std::vector<std::vector<Square>> input = aoc::parse(
     std::ifstream{"input/day-03.input"},
     [](const std::string& line) -> std::vector<Square> {
       std::vector<Square> row;

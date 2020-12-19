@@ -38,7 +38,7 @@ namespace part_two {
 }
 
 TEST_CASE("day two") {
-  std::vector<Password> passwords = parse(
+  std::vector<Password> passwords = aoc::parse(
     std::ifstream{"input/day-02.input"},
     [](const std::string& line) -> Password {
       std::istringstream ss(line);

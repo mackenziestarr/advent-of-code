@@ -37,7 +37,7 @@ std::vector<int> combination_summing_to_n(std::vector<int>& input, const int k, 
 }
 
 TEST_CASE("day one") {
-  std::vector<int> input = parse(
+  std::vector<int> input = aoc::parse(
     std::ifstream{"input/day-01.input"},
     [](const std::string& line) -> int {
       return std::atoi(line.c_str());
