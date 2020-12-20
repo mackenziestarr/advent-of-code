@@ -1,7 +1,9 @@
 #include <vector>
 #include <istream>
 #include <string>
+#include <iostream>
 #include <functional>
+#include <unordered_map>
 
 namespace aoc {
   template <typename Functor>
@@ -15,4 +17,29 @@ namespace aoc {
     return out;
   }
 }
+
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
+  out << "[";
+  for (std::size_t i = 0; i < v.size(); i++) {
+    out << v[i];
+    if (i != v.size() - 1) out << ", ";
+  }
+  out << "]";
+  return out;
+}
+
+template <typename K, typename V>
+std::ostream& operator<<(std::ostream& out, const std::unordered_map<K,V>& in) {
+  out << "{";
+  for (auto it = in.begin(); it != in.end();) {
+    const auto& [k, v] = *it;
+    out << "{" << k << " => " << v << "}";
+    if (++it == in.end()) {}
+    else out << ",";
+  }
+  out << "}";
+  return out;
+}
+
 
