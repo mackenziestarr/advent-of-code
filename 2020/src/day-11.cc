@@ -1,80 +1,114 @@
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 #include <fstream>
+#include <vector>
+#include <cmath>
+#include <set>
 #include "lib.h"
 
-enum class Type {
+enum class Position {
   EmptySeat,
   OccupiedSeat,
   Floor
 };
 
-struct Cell {
-  Type type;
-};
-
 constexpr auto parse = [](auto&& in) {
   return aoc::parse(in, [](const std::string& line) {
-    std::vector<Cell> out;
+    std::vector<Position> out;
     for (const auto& c : line) {
-      if (c == '.') out.push_back({Type::Floor});
-      if (c == 'L') out.push_back({Type::EmptySeat});
+      if (c == '.') out.push_back({Position::Floor});
+      if (c == 'L') out.push_back({Position::EmptySeat});
+      if (c == '#') out.push_back({Position::OccupiedSeat});
     }
     return out;
   });
 };
 
-int adjacent_occupied_seats(const auto& v, int row_index, int col_index) {
+constexpr auto in_bounds = [](const auto& v, int row_index, int col_index) {
+  int row_size = v.size();
+  int col_size = v[0].size();
+  return row_index >= 0 && row_index < row_size &&
+         col_index >= 0 && col_index < col_size;
+};
+
+
+auto adjacent_occupied_seats = [](const auto& v, int row_index, int col_index) {
   static const std::pair<int, int> neighbors[] {
-    {-1, -1},
-    {-1,  0},
-    {-1,  1},
-    {0,  -1},
-    {0,   1},
-    {1,  -1},
-    {1,   0},
-    {1,   1}
+    {-1, -1}, {0, -1}, {+1,  -1},
+    {-1,  0},          {+1,   0},
+    {-1, +1}, {0, +1}, {+1,  +1}
   };
   int sum = 0;
   for (const auto& [row_offset, col_offset] : neighbors) {
     auto neighbor_row_index = row_index + row_offset;
     auto neighbor_col_index = col_index + col_offset;
-    if (neighbor_row_index < 0 || !(neighbor_row_index < v.size())) continue;
-    if (neighbor_col_index < 0 || !(neighbor_col_index < v[0].size())) continue;
-    const Cell c = v[neighbor_row_index][neighbor_col_index];
-    if (c.type == Type::OccupiedSeat) sum++;
+    if (!in_bounds(v, neighbor_row_index, neighbor_col_index)) continue;
+    const auto p = v[neighbor_row_index][neighbor_col_index];
+    if (p == Position::OccupiedSeat) sum++;
   }
   return sum;
-}
-
-auto simulate(const auto& input, bool& was_modified) {
-  int modify_count = 0;
-  std::vector<std::vector<Cell>> out(input.begin(), input.end());
-  for (int i = 0; i < out.size(); i++) {
-    for (int j = 0; j < out[0].size(); j++) {
-      auto count = adjacent_occupied_seats(input, i, j);
-      const auto cell = input[i][j];
-      if (cell.type == Type::EmptySeat && count == 0) {
-	out[i][j] = {Type::OccupiedSeat};
-	modify_count++;
-      }
-      else if (cell.type == Type::OccupiedSeat && count >= 4) {
-	out[i][j] = {Type::EmptySeat};
-	modify_count++;	
-      }
-    }
-  }
-  was_modified = modify_count > 0;
-  return out;
 };
 
+auto visible_occupied_seats = [](const auto& v, int row_index, int col_index) {
+  static const std::pair<int, int> neighbors[] {
+    {-1, -1}, {0, -1}, {+1,  -1},
+    {-1,  0},          {+1,   0},
+    {-1, +1}, {0, +1}, {+1,  +1}
+  };
+  int sum = 0;
+  for (const auto& [row_offset, col_offset] : neighbors) {
+    auto neighbor_row_index = row_index + row_offset;
+    auto neighbor_col_index = col_index + col_offset;
+    while (in_bounds(v, neighbor_row_index, neighbor_col_index)) {
+      const Position p = v[neighbor_row_index][neighbor_col_index];
+
+      if (p == Position::OccupiedSeat) {
+	sum++;
+	break;
+      } else if (p == Position::EmptySeat) {
+	break;
+      }
+
+      neighbor_row_index += row_offset;
+      neighbor_col_index += col_offset;
+    }
+  }
+  
+  return sum;
+};
+
+
+template <typename CountFn>
+auto simulate(auto input, int empty_seat_threshold, CountFn fn) {
+  while (true) {
+    int was_modified = false;
+    std::vector<std::vector<Position>> output = input;
+    for (int i = 0; i < output.size(); i++) {
+	for (int j = 0; j < output[0].size(); j++) {
+	  auto count = fn(input, i, j);
+	  const auto p = input[i][j];
+	  if (p == Position::EmptySeat && count == 0) {
+	    output[i][j] = Position::OccupiedSeat;
+	    was_modified = true;
+	  }
+	  else if (p == Position::OccupiedSeat && count >= empty_seat_threshold) {
+	    output[i][j] = Position::EmptySeat;
+	    was_modified = true;	    
+	  }
+	}
+    }
+    if (!was_modified) return output;
+    input = output;
+  }
+  return input;
+}
+
 auto count_occupied_seats(const auto& input) {
-  // TODO replace with flat map
   int sum  = 0;
   for (int i = 0; i < input.size(); i++) {
     for (int j = 0; j < input[0].size(); j++) {
-      const auto cell = input[i][j];
-      if (cell.type == Type::OccupiedSeat) sum++;
+      const auto p = input[i][j];
+      if (p == Position::OccupiedSeat) sum++;
     }
   }
   return sum;
@@ -94,20 +128,21 @@ TEST_CASE("day ten") {
          L.LLLLLL.L
          L.LLLLL.LL)"
     });
-    bool was_modified = true;
-    std::vector<std::vector<Cell>> out = input;
-    while (was_modified) {
-      out = simulate(out, was_modified);
-    }
-    REQUIRE(count_occupied_seats(out) == 37);
+
+    auto part_one_output = simulate(input, 4, adjacent_occupied_seats);
+    REQUIRE(count_occupied_seats(part_one_output) == 37);
+    
+    auto part_two_output = simulate(input, 5, visible_occupied_seats);
+    REQUIRE(count_occupied_seats(part_two_output) == 26);
   }
   SECTION("part one") {
     auto input = parse(std::ifstream { "input/day-11.input" });
-    bool was_modified = true;
-    std::vector<std::vector<Cell>> out = input;
-    while (was_modified) {
-      out = simulate(out, was_modified);
-    }
-    REQUIRE(count_occupied_seats(out) == 2334);
+    auto output = simulate(input, 4, adjacent_occupied_seats);
+    REQUIRE(count_occupied_seats(output) == 2334);
+  }
+  SECTION("part two") {
+    auto input = parse(std::ifstream { "input/day-11.input" });
+    auto output = simulate(input, 5, visible_occupied_seats);
+    REQUIRE(count_occupied_seats(output) == 2100);
   }
 }
