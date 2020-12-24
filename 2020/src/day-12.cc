@@ -69,34 +69,16 @@ namespace part_two {
       case 'E': { waypoint += {-amount, 0}; break; }
       case 'W': { waypoint += {+amount, 0}; break; }
       case 'L': {
-	std::unordered_map<int, std::pair<Coordinate, bool>>
-        ccw_rotations = {
-	    {90,  {{+1, -1}, true }},
-	    {180, {{-1, -1}, false}},
-	    {270, {{-1, +1}, true }}
-       };
-       const auto& [flip_signs, swap_coordinates] = ccw_rotations[amount];
-       if (swap_coordinates) {
-	  auto& [x, y] = waypoint;
-	  std::swap(x, y);
-       }
-       waypoint *= flip_signs;
-       break;
+	for (int r = 1; r <= amount / 90; r++) {
+	  waypoint = {waypoint.y, -waypoint.x};
+	}
+	break;
       }
       case 'R': {
-	std::unordered_map<int, std::pair<Coordinate, bool>>
-        cw_rotations = {
-	    {90,  {{-1, +1}, true }},
-	    {180, {{-1, -1}, false}},
-	    {270, {{+1, -1}, true }}
-       };
-       const auto& [flip_signs, swap_coordinates] = cw_rotations[amount];
-       if (swap_coordinates) {
-	  auto& [x, y] = waypoint;
-	  std::swap(x, y);
-       }
-       waypoint *= flip_signs;
-       break;
+	for (int r = 1; r <= amount / 90; r++) {
+	  waypoint = {-waypoint.y, waypoint.x};
+	}
+	break;
       }
       }
     }
@@ -139,6 +121,6 @@ F11)"
     Coordinate waypoint {-10, 1};    
     auto input = parse(std::ifstream { "input/day-12.input"});
     const auto& destination = part_two::navigate(input, waypoint, origin);
-    REQUIRE(manhattan_distance(destination, origin) == 439);
+    REQUIRE(manhattan_distance(destination, origin) == 12385);
   } 
 }
