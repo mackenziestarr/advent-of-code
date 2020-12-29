@@ -1,3 +1,4 @@
+# TODO(@mstarr) scope inputs to be per exercise
 filegroup(
     name = "data",
     visibility = ["//visibility:public"],
@@ -15,5 +16,6 @@ filegroup(
         "day-11.input",
         "day-12.input",
         "day-13.input",
+        "day-14.input",
     ],
 )
