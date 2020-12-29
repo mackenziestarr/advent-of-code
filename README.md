@@ -2,7 +2,7 @@
 
 ## 2020
 
-### language: C++
+### language: C++20
 
 ```shell session
 cd 2020
