@@ -1,9 +1,10 @@
-#include <vector>
-#include <istream>
-#include <string>
-#include <iostream>
 #include <functional>
+#include <iostream>
+#include <istream>
+#include <sstream>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace aoc {
   template <typename Functor>
@@ -14,6 +15,16 @@ namespace aoc {
     std::string line;
     std::vector<decltype(fn(std::string {}))> out;
     while(std::getline(istream, line)) out.push_back(fn(line));
+    return out;
+  }
+  template <typename T = int>
+  auto split(const std::string& input, const char delimiter) {
+    std::vector<T> out;
+    std::stringstream ss {input};
+    for (T i; ss >> i;) {
+      out.push_back(i);
+      if (ss.peek() == delimiter) ss.ignore();
+    }
     return out;
   }
 }

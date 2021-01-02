@@ -8,13 +8,7 @@
 #include "lib.h"
 
 auto parse(const std::string& input) {
-  std::vector<int> out;
-  std::stringstream ss {input};
-  for (int i; ss >> i;) {
-    out.push_back(i);
-    if (ss.peek() == ',') ss.ignore();
-  }
-  return out;
+  return aoc::split<int>(input, ',');
 }
 
 auto solve_part_one(const auto& input, int turns) {
