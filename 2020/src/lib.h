@@ -7,8 +7,8 @@
 #include <vector>
 
 namespace aoc {
-  template <typename Functor>
-  auto parse(auto&& istream, Functor fn) {
+  template <typename Fn>
+  auto parse(auto&& istream, Fn fn) {
     if (!istream.good()) {
       throw std::runtime_error("couldn't open input file");
     }
