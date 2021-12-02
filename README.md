@@ -1,5 +1,9 @@
 # Advent of Code
 
+## 2021
+
+### language: Rust
+
 ## 2020
 
 ### language: C++20
