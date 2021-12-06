@@ -1,0 +1,9 @@
+[package]
+name = "advent_of_code"
+version = "0.0.1"
+
+[[bin]]
+name = "day-01"
+
+[[bin]]
+name = "day-02"
