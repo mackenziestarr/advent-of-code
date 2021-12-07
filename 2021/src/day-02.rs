@@ -56,7 +56,7 @@ fn part_two(input: &Vec<(&str, i32)>) -> i32 {
 
 #[test]
 fn test_part_two() {
-    let input = [
+    let input = vec![
         ("forward", 5),
         ("down", 5),
         ("forward", 8),
@@ -64,7 +64,7 @@ fn test_part_two() {
         ("down", 8),
         ("forward", 2),
     ];
-    assert_eq!(part_two(&input.to_vec()), 900)
+    assert_eq!(part_two(&input), 900)
 }
 
 fn main() {
