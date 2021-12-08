@@ -1,4 +1,4 @@
-fn part_one(input: &Vec<i32>) -> usize {
+fn part_one(input: &[i32]) -> usize {
     input
         .windows(2)
         .map(|w| w[1] - w[0]) // adjacent difference
@@ -6,7 +6,7 @@ fn part_one(input: &Vec<i32>) -> usize {
         .count()
 }
 
-fn part_two(input: &Vec<i32>) -> usize {
+fn part_two(input: &[i32]) -> usize {
     input
         .windows(3)
         .map(|w| w[2] + w[1] + w[0])

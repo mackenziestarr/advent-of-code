@@ -1,5 +1,5 @@
-fn count_bits_at_position(input: &Vec<u32>, position: usize) -> (u32, u32) {
-    input.into_iter().fold((0, 0), |result, i| {
+fn count_bits_at_position(input: &[u32], position: usize) -> (u32, u32) {
+    input.iter().fold((0, 0), |result, i| {
         let (zeros, ones) = result;
         if i & (1 << position) != 0 {
             (zeros, ones + 1)
@@ -9,7 +9,7 @@ fn count_bits_at_position(input: &Vec<u32>, position: usize) -> (u32, u32) {
     })
 }
 
-fn part_one(input: &Vec<u32>, width: usize) -> (u32, u32) {
+fn part_one(input: &[u32], width: usize) -> (u32, u32) {
     let mut result = 0;
     for position in 0..width {
         let (zeros, ones) = count_bits_at_position(input, position);
@@ -24,8 +24,8 @@ fn part_one(input: &Vec<u32>, width: usize) -> (u32, u32) {
     (gamma_rate, epsilon_rate)
 }
 
-fn part_two(input: &Vec<u32>, width: usize) -> (u32, u32) {
-    let oxygen_generator_rating = (0..width).rfold(input.clone(), |input, position| {
+fn part_two(input: &[u32], width: usize) -> (u32, u32) {
+    let oxygen_generator_rating = (0..width).rfold(input.to_owned(), |input, position| {
         if input.len() == 1 {
             input
         } else {
@@ -43,7 +43,7 @@ fn part_two(input: &Vec<u32>, width: usize) -> (u32, u32) {
                 .collect()
         }
     });
-    let co2_scrubber_rating = (0..width).rfold(input.clone(), |input, position| {
+    let co2_scrubber_rating = (0..width).rfold(input.to_owned(), |input, position| {
         if input.len() == 1 {
             input
         } else {

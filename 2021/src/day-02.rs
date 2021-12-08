@@ -5,7 +5,7 @@ struct Answer {
     depth: i32,
 }
 
-fn part_one(input: &Vec<(&str, i32)>) -> i32 {
+fn part_one(input: &[(&str, i32)]) -> i32 {
     let init = Answer {
         aim: 0,
         position: 0,
@@ -29,7 +29,7 @@ fn part_one(input: &Vec<(&str, i32)>) -> i32 {
     result.depth * result.position
 }
 
-fn part_two(input: &Vec<(&str, i32)>) -> i32 {
+fn part_two(input: &[(&str, i32)]) -> i32 {
     let init = Answer {
         aim: 0,
         position: 0,
@@ -71,7 +71,7 @@ fn main() {
     let input: Vec<(&str, i32)> = include_str!("../input/day-02.txt")
         .lines()
         .map(|s| {
-            let v: Vec<&str> = s.splitn(2, " ").collect();
+            let v: Vec<&str> = s.splitn(2, ' ').collect();
             (v[0], v[1].parse::<i32>().unwrap())
         })
         .collect();
