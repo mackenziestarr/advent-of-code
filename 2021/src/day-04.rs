@@ -67,43 +67,36 @@ fn test_is_winner() {
     assert_eq!(is_winner(&not_a_winner, 2), false);
 }
 
-fn is_winner(board: &Vec<BingoSquare>, size: usize) -> bool {
+fn is_winner(board: &[BingoSquare], size: usize) -> bool {
     let row_winner = board
         .chunks(size)
         .any(|row| row.iter().all(|square| square.is_marked));
-    if row_winner {
-        return true;
-    }
 
-    for i in 0..size {
-        let mut column_is_winner = true;
-        for j in 0..size {
-            let value: &BingoSquare = &board[j * size + i];
-            column_is_winner = column_is_winner && value.is_marked
-        }
-        if column_is_winner {
-            return true;
-        }
-    }
-
-    false
+    let column_winner = (0..size).any(|i| {
+        board
+            .iter()
+            .skip(i)
+            .step_by(size)
+            .all(|square| square.is_marked)
+    });
+    row_winner || column_winner
 }
 
 fn part_one(
-    numbers_to_draw: &Vec<u32>,
+    numbers_to_draw: &[u32],
     mut boards: Vec<Vec<BingoSquare>>,
     size: usize,
 ) -> Option<u32> {
     for number in numbers_to_draw {
-        for i in 0..boards.len() {
-            for j in 0..boards[i].len() {
-                if boards[i][j].value == *number {
-                    boards[i][j].is_marked = true;
+        for board in &mut boards {
+            for square in &mut *board {
+                if square.value == *number {
+                    square.is_marked = true;
                 }
             }
-            if is_winner(&boards[i], size) {
+            if is_winner(board, size) {
                 return Some(
-                    boards[i]
+                    board
                         .iter()
                         .filter(|b| !b.is_marked)
                         .map(|b| b.value)
@@ -158,25 +151,26 @@ fn test_part_two() {
 }
 
 fn part_two(
-    numbers_to_draw: &Vec<u32>,
+    numbers_to_draw: &[u32],
     mut boards: Vec<Vec<BingoSquare>>,
     size: usize,
 ) -> Option<u32> {
     let mut winners: HashSet<Vec<BingoSquare>> = HashSet::new();
     for number in numbers_to_draw {
-        for i in 0..boards.len() {
-            if winners.contains(boards[i].as_slice()) {
+        let number_of_boards = boards.len();
+        for board in &mut boards {
+            if winners.contains(board.as_slice()) {
                 continue;
             }
-            for j in 0..boards[i].len() {
-                if boards[i][j].value == *number {
-                    boards[i][j].is_marked = true;
+            for square in &mut *board {
+                if square.value == *number {
+                    square.is_marked = true;
                 }
             }
-            if is_winner(&boards[i], size) {
-                winners.insert(boards[i].to_owned());
-                if winners.len() == boards.len() {
-                    let sum = boards[i]
+            if is_winner(board, size) {
+                winners.insert(board.to_owned());
+                if winners.len() == number_of_boards {
+                    let sum = board
                         .iter()
                         .filter(|b| !b.is_marked)
                         .map(|b| b.value)
@@ -224,6 +218,6 @@ fn main() {
     );
     println!(
         "- part two: {}",
-        part_two(&numbers_to_draw, boards.clone(), size).unwrap()
+        part_two(&numbers_to_draw, boards, size).unwrap()
     );
 }
