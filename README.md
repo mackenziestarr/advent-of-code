@@ -4,6 +4,10 @@
 
 ### language: Rust
 
+```shell session
+cargo run day-XX # e.g. day-01
+```
+
 ## 2020
 
 ### language: C++20
