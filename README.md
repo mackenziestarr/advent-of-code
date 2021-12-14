@@ -5,6 +5,7 @@
 ### language: Rust
 
 ```shell session
+cd 2021
 cargo run day-XX # e.g. day-01
 ```
 
